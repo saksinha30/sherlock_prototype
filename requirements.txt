@@ -1,0 +1,5 @@
+# No dependencies are required for the default (heuristic) mode.
+# Install this only if you want to use the real LLM-based transcript
+# classifier in signals.py (_llm_transcript_signal) instead of the
+# built-in keyword heuristic fallback.
+anthropic
