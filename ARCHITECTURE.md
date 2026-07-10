@@ -2,36 +2,47 @@
 
 ```mermaid
 flowchart TD
-    A[Meeting Platform<br/>Google Meet / Teams / Zoom] -->|bot/SDK integration| B[Event Ingestion Layer]
-    B --> B1[Participant join/leave, rename events]
-    B --> B2[Per-participant audio + speaking activity]
-    B --> B3[Speaker-attributed transcript]
-    B --> B4[Screen-share events]
-    B --> B5[Calendar metadata: candidate name/email,<br/>interviewer names, company domain]
+    A["Meeting Platform: Meet / Teams / Zoom"] --> B["Event Ingestion Layer"]
+    B --> B1["Join, leave, and rename events"]
+    B --> B2["Per-participant audio and speaking activity"]
+    B --> B3["Speaker-attributed transcript"]
+    B --> B4["Screen-share events"]
+    B --> B5["Calendar metadata: name, email, interviewers, domain"]
 
-    B1 --> C[Signal Extraction Layer]
-    B2 --> C
-    B3 --> C
-    B4 --> C
-    B5 --> C
-
-    subgraph C[Signal Extraction Layer — signals.py]
-        C1[name_match<br/>fuzzy + nickname match]
-        C2[interviewer_roster<br/>suppress known interviewers]
-        C3[meeting_host<br/>organizer check]
-        C4[email_domain<br/>internal vs external]
-        C5[speaking_pattern<br/>talk share + Q/A ratio]
-        C6[transcript_semantics<br/>LLM or heuristic]
-        C7[screen_share<br/>content-type prior]
+    subgraph SIG["Signal Extraction Layer"]
+        C1["name_match"]
+        C2["interviewer_roster"]
+        C3["meeting_host"]
+        C4["email_domain"]
+        C5["speaking_pattern"]
+        C6["transcript_semantics"]
+        C7["screen_share"]
     end
 
-    C --> D[Fusion / Belief Engine — fusion.py]
-    D --> D1[Adaptive reliability check<br/>down-weights bad metadata]
-    D --> D2[Weighted evidence sum → softmax]
-    D --> D3[Decision rule:<br/>IDENTIFIED / AMBIGUOUS / GATHERING_EVIDENCE]
+    B1 --> C1
+    B1 --> C2
+    B1 --> C3
+    B2 --> C5
+    B3 --> C6
+    B4 --> C7
+    B5 --> C1
+    B5 --> C2
+    B5 --> C4
 
-    D --> E[Live Confidence + Explanation Output]
-    E --> F[Downstream fraud detectors<br/>deepfake / voice-clone / behavioral analysis]
+    C1 --> D["Fusion and Belief Engine"]
+    C2 --> D
+    C3 --> D
+    C4 --> D
+    C5 --> D
+    C6 --> D
+    C7 --> D
+
+    D --> D1["Adaptive reliability check"]
+    D --> D2["Weighted evidence sum, then softmax"]
+    D --> D3["Decision: IDENTIFIED, AMBIGUOUS, or GATHERING EVIDENCE"]
+
+    D3 --> E["Live Confidence and Explanation Output"]
+    E --> F["Downstream fraud detectors: deepfake, voice clone, behavioral"]
 ```
 
 ## Why this shape
